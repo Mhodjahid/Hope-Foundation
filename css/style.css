@@ -1325,6 +1325,10 @@ h2 {
 }
 
 @media (max-width: 991.98px) {
+    .site-header {
+        z-index: 1046;
+        backdrop-filter: none;
+    }
     .site-nav {
         min-height: 66px;
     }
