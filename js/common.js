@@ -89,7 +89,7 @@ if (pageLoader) {
             pageLoader.setAttribute("aria-hidden", "true");
             setPageLoading(false);
             navigationPending = false;
-        }, 8000);
+        }, 1000);
     }
 
     document.addEventListener("click", (event) => {
@@ -103,13 +103,21 @@ if (pageLoader) {
             return;
         }
 
+        const destination = new URL(link.href, window.location.href);
+        const samePage = destination.origin === window.location.origin
+            && destination.pathname === window.location.pathname
+            && destination.search === window.location.search;
+
+        if (samePage && destination.hash) {
+            return;
+        }
+
         event.preventDefault();
         if (navigationPending) {
             return;
         }
 
         navigationPending = true;
-        const destination = new URL(link.href, window.location.href);
         pageLoader.classList.add("is-active");
         pageLoader.setAttribute("aria-hidden", "false");
         setPageLoading(true);
@@ -119,25 +127,8 @@ if (pageLoader) {
             pageLoader.setAttribute("aria-hidden", "true");
             setPageLoading(false);
             navigationPending = false;
-
-            const samePage = destination.origin === window.location.origin
-                && destination.pathname === window.location.pathname
-                && destination.search === window.location.search;
-
-            if (samePage && destination.hash) {
-                const target = document.getElementById(decodeURIComponent(destination.hash.slice(1)));
-                if (target && window.location.hash === destination.hash) {
-                    target.scrollIntoView({
-                        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-                            ? "auto"
-                            : "smooth",
-                    });
-                }
-                window.location.href = destination.href;
-            } else {
-                window.location.href = destination.href;
-            }
-        }, 8000);
+            window.location.href = destination.href;
+        }, 1000);
     }, true);
 }
 
